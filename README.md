@@ -1,33 +1,34 @@
 # 🤖 RoshabGPT - Your Personal AI Assistant
 
-**Roshab Bhandari** द्वारा विकसित, यो एक शक्तिशाली एआई च्याटबोट हो जसले तपाईंका प्रश्नहरूको छिटो र सही जवाफ दिन्छ。
+**Developed by Roshab Bhandari**, this is a powerful AI chatbot designed to give fast and accurate answers to your questions.
 
 ---
 
-## 🚀 मुख्य विशेषताहरू (Features)
-* **Real-time Chat**: गुगलको **Gemini AI** प्रयोग गरेर तुरुन्तै उत्तर दिने。
-* **Modern Design**: मोबाइल र डेस्कटप दुवैमा चल्ने सुन्दर डिजाइन。
-* **Always Online**: **Render** मा २४सै घण्टा उपलब्ध。
+## 🚀 Features (मुख्य विशेषताहरू)
+* **Real-time Chat**: Uses Google's **Gemini AI** for instant responses.
+* **Modern Interface**: Beautiful design that works on both mobile and desktop.
+* **High Availability**: Hosted on **Render**, available 24/7.
 
 ---
 
-## 📲 एप डाउनलोड गर्ने तरिका (How to Download/Install)
-यो एउटा **Progressive Web App (PWA)** हो। यसलाई आफ्नो मोबाइलमा वास्तविक एप जस्तै राख्न यी कदमहरू चाल्नुहोस्:
+## 📲 How to Download (कसरी डाउनलोड गर्ने)
+This is a **Progressive Web App (PWA)**. To install it on your mobile:
 
-1. आफ्नो मोबाइलको **Chrome** ब्राउजरमा यो लिङ्क खोल्नुहोस्: [https://roshabgpt.onrender.com](https://roshabgpt.onrender.com)。
-2. ब्राउजरको दायाँ कुनामा रहेको **तीनवटा थोप्लो (⋮)** मा क्लिक गर्नुहोस्।
-3. **"Install App"** वा **"Add to Home Screen"** विकल्प रोज्नुहोस्।
-4. अब तपाईंको मोबाइलको स्क्रिनमा **RoshabGPT** को आइकन बस्नेछ。
-
----
-
-## 🌐 लाइभ लिंक (Live Website)
-[👉 यहाँ क्लिक गरेर RoshabGPT चलाउनुहोस् 👈](https://roshabgpt.onrender.com)
+1. Open this link in **Chrome**: [https://roshabgpt.onrender.com](https://roshabgpt.onrender.com).
+2. Tap the **three dots (⋮)** in the top right corner.
+3. Select **"Install App"** or **"Add to Home Screen"**.
+4. You will now see the **RoshabGPT icon** on your mobile screen.
 
 ---
 
-## 🛠️ प्रविधिहरू (Technologies Used)
-* **Language**: Python 3
-* **AI Model**: Google Gemini API
-* **Hosting**: Render Cloud
-* **Framework**: Flask
+## ⚡ Download / Live Access
+Click the button below to open and install the app:
+
+[![Download RoshabGPT](https://img.shields.io/badge/Download-RoshabGPT-blue?style=for-the-badge&logo=android&logoColor=white)](https://roshabgpt.onrender.com)
+
+---
+
+## 🛠️ Tech Stack
+* **Python 3** & **Flask**
+* **Google Gemini AI**
+* **Render Cloud Hosting**
