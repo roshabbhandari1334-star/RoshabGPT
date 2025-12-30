@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoshabGPT - Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --bg: #000000; --sidebar: #131314; --card: #1e1f20; --accent: #4285f4; --text: #e3e3e3; }
+        body, html { margin:0; padding:0; height:100%; background:var(--bg); color:var(--text); font-family:'Inter', sans-serif; overflow:hidden; }
+
+        /* Auth Screen */
+        #auth { position:fixed; inset:0; z-index:1000; background:radial-gradient(circle at top right, #1a1a1b, #000); display:flex; align-items:center; justify-content:center; }
+        .login-card { background:var(--card); padding:40px; border-radius:28px; width:90%; max-width:380px; text-align:center; border:1px solid rgba(255,255,255,0.1); }
+        .login-card input { width:100%; padding:14px; margin:10px 0; border-radius:12px; background:#000; border:1px solid #333; color:white; box-sizing:border-box; }
+        .btn { background:var(--accent); color:white; border:none; padding:14px; border-radius:50px; width:100%; font-weight:600; cursor:pointer; }
+
+        /* Main App */
+        #app { display:none; height:100vh; flex-direction:row; }
+        .sidebar { width:260px; background:var(--sidebar); border-right:1px solid #222; padding:20px; display:flex; flex-direction:column; }
+        .main { flex:1; display:flex; flex-direction:column; position:relative; }
+        .feed { flex:1; overflow-y:auto; padding:40px 15%; display:flex; flex-direction:column; gap:30px; }
+        .row { display:flex; gap:20px; max-width:800px; width:100%; margin:0 auto; }
+        .user-row { justify-content:flex-end; }
+        .user-msg { background:#2a2a2a; padding:12px 20px; border-radius:20px; max-width:80%; }
+        .avatar { width:32px; height:32px; }
+
+        /* Floating Input */
+        .input-box { padding:20px 10%; display:flex; justify-content:center; }
+        .pill { background:var(--card); width:100%; max-width:750px; padding:12px 25px; border-radius:40px; border:1px solid #333; display:flex; align-items:center; gap:15px; }
+        .pill input { flex:1; background:transparent; border:none; color:white; outline:none; font-size:16px; }
+        .pill i { color:#888; cursor:pointer; font-size:20px; }
+
+        /* Plus Menu Bottom Sheet */
+        .sheet { position:fixed; bottom:-100%; left:0; width:100%; background:#131314; border-radius:28px 28px 0 0; padding:20px; transition:0.4s; z-index:100; border-top:1px solid #333; }
+        .sheet.active { bottom:0; }
+        .item { display:flex; align-items:center; gap:15px; padding:15px; cursor:pointer; border-radius:12px; }
+        .item:hover { background:rgba(255,255,255,0.05); }
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:90; }
+
+        /* Video Call */
+        #video-feed { display:none; position:fixed; top:20px; right:20px; width:180px; height:130px; border-radius:15px; border:2px solid var(--accent); object-fit:cover; z-index:200; }
+    </style>
+</head>
+<body>
+
+    <video id="video-feed" autoplay muted></video>
+    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+    <div id="auth">
+        <div class="login-card">
+            <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d473530437e292944b7ae.svg" width="50">
+            <h2>RoshabGPT</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" placeholder="Password">
+            <button class="btn" onclick="doLogin()">Sign In</button>
+        </div>
+    </div>
+
+    <div id="app">
+        <aside class="sidebar">
+            <h3>RoshabGPT</h3>
+            <div style="flex:1"></div>
+            <button class="btn" style="background:transparent; border:1px solid #333;" onclick="location.reload()">Sign Out</button>
+        </aside>
+
+        <main class="main">
+            <div class="feed" id="chat">
+                <div class="row">
+                    <img class="avatar" src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d473530437e292944b7ae.svg">
+                    <div class="msg">How can I assist you today?</div>
+                </div>
+            </div>
+
+            <div class="input-box">
+                <div class="pill">
+                    <i class="fa-solid fa-circle-plus" onclick="toggleMenu()"></i>
+                    <input type="text" id="uIn" placeholder="Ask RoshabGPT..." onkeypress="if(event.key==='Enter') send()">
+                    <i class="fa-solid fa-video" onclick="startCall()"></i>
+                    <i class="fa-solid fa-paper-plane" onclick="send()" style="color:var(--accent)"></i>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="menu" class="sheet">
+        <div style="width:40px; height:4px; background:#333; margin:0 auto 15px; border-radius:2px;"></div>
+        <div class="item" onclick="setMode('Generate Image: ')"><i class="fa-solid fa-image" style="color:#8ab4f8"></i> Nano Banana (Image)</div>
+        <div class="item" onclick="setMode('Make Video: ')"><i class="fa-solid fa-video" style="color:#8ab4f8"></i> Veo 2 (Video)</div>
+    </div>
+
+    <script>
+        function doLogin() {
+            if(document.getElementById('username').value) {
+                document.getElementById('auth').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+            }
+        }
+
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('active');
+            document.getElementById('overlay').style.display = (document.getElementById('overlay').style.display === 'block') ? 'none' : 'block';
+        }
+
+        function setMode(text) {
+            document.getElementById('uIn').value = text;
+            toggleMenu();
+            document.getElementById('uIn').focus();
+        }
+
+        async function startCall() {
+            const v = document.getElementById('video-feed');
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({video:true});
+                v.srcObject = s; v.style.display = "block";
+            } catch(e) { alert("Camera Denied"); }
+        }
+
+        async function send() {
+            const input = document.getElementById('uIn');
+            const feed = document.getElementById('chat');
+            const val = input.value.trim();
+            if(!val) return;
+
+            feed.innerHTML += `<div class="row user-row"><div class="user-msg">${val}</div></div>`;
+            input.value = "";
+            feed.scrollTop = feed.scrollHeight;
+
+            const tid = "t"+Date.now();
+            feed.innerHTML += `<div class="row" id="${tid}"><div style="color:#888">RoshabGPT is thinking...</div></div>`;
+
+            const res = await fetch('/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: val})
+            });
+            const data = await res.json();
+            document.getElementById(tid).remove();
+
+            let content = data.reply;
+            if(data.image) content += `<br><img src="data:image/png;base64,${data.image}" style="width:100%; border-radius:15px; margin-top:15px;">`;
+
+            feed.innerHTML += `
+                <div class="row">
+                    <img class="avatar" src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d473530437e292944b7ae.svg">
+                    <div class="msg">${content}</div>
+                </div>`;
+            feed.scrollTop = feed.scrollHeight;
+        }
+    </script>
+</body>
+</html>
