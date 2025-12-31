@@ -9,10 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__, template_folder='templates')
 
-# API Key लाई सुरक्षित तरिकाले तान्ने
+# API Key लाई Render को Environment Variables बाट तान्ने
+# कोड भित्र सिधै "AIzaSy..." नलेख्नुहोला, यसले गर्दा नै एरर आएको हो
 API_KEY = os.getenv("AIzaSyAdutd4e6DNIWwyGJ5JblC4pEIGPW7fRPA") 
 
-# API Key सेट छ कि छैन जाँच गर्ने (Error रोक्न)
+# API Key सेट छ कि छैन जाँच गर्ने
 if API_KEY:
     genai.configure(api_key=API_KEY)
 else:
@@ -32,7 +33,7 @@ def chat_handler():
     user_message = data.get("message", "").lower()
     
     if not API_KEY:
-        return jsonify({"reply": "Error: API Key is missing. Please set GEMINI_API_KEY in Render settings.", "type": "text"}), 500
+        return jsonify({"reply": "Error: API Key is missing in Render settings.", "type": "text"}), 500
     
     try:
         # Gemini 2.0 Flash प्रयोग गर्ने
