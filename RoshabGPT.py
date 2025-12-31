@@ -5,13 +5,13 @@ from flask import Flask, request, jsonify, render_template
 import google.generativeai as genai 
 from dotenv import load_dotenv
 
-# 1. Setup - template_folder थपिएको छ ताकि index.html फेला परोस्
+# 1. Setup - templates फोल्डर चिन्नका लागि यो अनिवार्य छ
 load_dotenv()
 app = Flask(__name__, template_folder='templates')
 
-# API Key लाई Render को Environment Variables बाट तान्ने
-# कोड भित्र सिधै "AIzaSy..." नलेख्नुहोला, यसले गर्दा नै एरर आएको हो
-API_KEY = os.getenv("AIzaSyAdutd4e6DNIWwyGJ5JblC4pEIGPW7fRPA") 
+# 2. API Key - Render को Environment Variables बाट तान्ने
+# यहाँ आफ्नो लामो AIzaSy... वाला Key नहाल्नुहोला
+API_KEY = os.getenv("GEMINI_API_KEY") 
 
 # API Key सेट छ कि छैन जाँच गर्ने
 if API_KEY:
@@ -24,23 +24,24 @@ DEVELOPER_PROMPT = "You are RoshabGPT, developed by Roshab Bhandari. You use Gem
 
 @app.route('/')
 def home():
-    # अब Flask ले सिधै templates फोल्डर भित्र index.html खोज्नेछ
+    # अब Flask ले सिधै templates फोल्डर भित्रको index.html भेट्टाउनेछ
     return render_template('index.html')
 
 @app.route('/chat', methods=['POST'])
 def chat_handler():
-    data = request.json
-    user_message = data.get("message", "").lower()
-    
-    if not API_KEY:
-        return jsonify({"reply": "Error: API Key is missing in Render settings.", "type": "text"}), 500
-    
     try:
+        data = request.json
+        user_message = data.get("message", "").lower()
+        
+        if not API_KEY:
+            return jsonify({"reply": "Error: API Key is missing in Render settings.", "type": "text"}), 500
+        
         # Gemini 2.0 Flash प्रयोग गर्ने
         model = genai.GenerativeModel('gemini-2.0-flash-exp')
         
-        # --- STANDARD CHAT ---
+        # एआईले जवाफ दिने भाग
         response = model.generate_content(f"System: {DEVELOPER_PROMPT}\nUser: {user_message}")
+        
         return jsonify({
             "reply": response.text,
             "type": "text"
