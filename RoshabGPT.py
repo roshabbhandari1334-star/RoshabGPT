@@ -1,54 +1,26 @@
 import os
-import time
-import base64
-from flask import Flask, request, jsonify, render_template
-import google.generativeai as genai 
-from dotenv import load_dotenv
+import google.generativeai as genai
+from flask import Flask, render_template, request, jsonify
 
-# 1. Setup - templates फोल्डरलाई Flask ले चिन्न सकोस्
-load_dotenv()
-app = Flask(__name__, template_folder='templates')
+# Gemini API key from Render Environment Variable
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
-# 2. API Key - Render को Environment Variables बाट मात्र तान्ने
-# यहाँ आफ्नो लामो AIzaSy... वाला Key सिधै नहाल्नुहोला (Error को मुख्य कारण यही हो)
-API_KEY = os.getenv("GEMINI_API_KEY") 
+app = Flask(__name__)
 
-# API Key सेट छ कि छैन जाँच गर्ने
-if API_KEY:
-    genai.configure(api_key=API_KEY)
-else:
-    print("Warning: GEMINI_API_KEY not found in environment variables")
+model = genai.GenerativeModel("gemini-1.5-flash")
 
-# Developer Info
-DEVELOPER_PROMPT = "You are RoshabGPT, developed by Roshab Bhandari. You use Gemini for text and images."
-
-@app.route('/')
+@app.route("/")
 def home():
-    # अब Flask ले सिधै templates फोल्डर भित्रको index.html भेट्टाउनेछ
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/chat', methods=['POST'])
-def chat_handler():
+@app.route("/chat_api", methods=["POST"])
+def chat_api():
     try:
-        data = request.json
-        user_message = data.get("message", "").lower()
-        
-        if not API_KEY:
-            return jsonify({"reply": "Error: API Key is missing in Render settings.", "type": "text"}), 500
-        
-        # Gemini 2.0 Flash प्रयोग गर्ने
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
-        
-        # एआईले जवाफ दिने भाग
-        response = model.generate_content(f"System: {DEVELOPER_PROMPT}\nUser: {user_message}")
-        
-        return jsonify({
-            "reply": response.text,
-            "type": "text"
-        })
-
+        user_msg = request.json.get("message", "")
+        response = model.generate_content(user_msg)
+        return jsonify({"reply": response.text})
     except Exception as e:
-        return jsonify({"reply": f"Error: {str(e)}", "type": "text"}), 500
+        return jsonify({"reply": "Server error"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
