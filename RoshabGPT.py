@@ -10,7 +10,7 @@ load_dotenv()
 app = Flask(__name__, template_folder='templates')
 
 # 2. API Key - Render को Environment Variables बाट तान्ने
-# यहाँ आफ्नो लामो AIzaSy... वाला Key नहाल्नुहोला
+# यहाँ आफ्नो लामो AIzaSy... वाला Key सिधै नहाल्नुहोला
 API_KEY = os.getenv("GEMINI_API_KEY") 
 
 # API Key सेट छ कि छैन जाँच गर्ने
