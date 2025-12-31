@@ -5,12 +5,12 @@ from flask import Flask, request, jsonify, render_template
 import google.generativeai as genai 
 from dotenv import load_dotenv
 
-# 1. Setup - templates फोल्डर चिन्नका लागि यो अनिवार्य छ
+# 1. Setup - templates फोल्डरलाई Flask ले चिन्न सकोस्
 load_dotenv()
 app = Flask(__name__, template_folder='templates')
 
-# 2. API Key - Render को Environment Variables बाट तान्ने
-# यहाँ आफ्नो लामो AIzaSy... वाला Key सिधै नहाल्नुहोला
+# 2. API Key - Render को Environment Variables बाट मात्र तान्ने
+# यहाँ आफ्नो लामो AIzaSy... वाला Key सिधै नहाल्नुहोला (Error को मुख्य कारण यही हो)
 API_KEY = os.getenv("GEMINI_API_KEY") 
 
 # API Key सेट छ कि छैन जाँच गर्ने
